@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 from opwen_email_server.services.storage import _AzureFileStorage
 from opwen_email_server.services.storage import AzureObjectStorage
 from opwen_email_server.services.storage import AzureTextStorage
-from opwen_email_server.utils.serialization import gzip_string
+from opwen_email_server.utils.serialization import zstd_compress
 
 
 class AzureTextStorageTests(TestCase):
@@ -48,7 +48,7 @@ class AzureTextStorageTests(TestCase):
 
         if content:
             build_blob = namedtuple('Blob', 'content')
-            data = gzip_string(content)
+            data = zstd_compress(content)
             client_mock.get_blob_to_bytes.return_value = build_blob(data)
 
         return storage, client_mock

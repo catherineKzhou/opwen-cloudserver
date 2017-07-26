@@ -8,8 +8,8 @@ from uuid import uuid4
 from azure.storage.blob import BlockBlobService
 
 from opwen_email_server.utils.log import LogMixin
-from opwen_email_server.utils.serialization import gunzip_string
-from opwen_email_server.utils.serialization import gzip_string
+from opwen_email_server.utils.serialization import zstd_decompress
+from opwen_email_server.utils.serialization import zstd_compress
 from opwen_email_server.utils.serialization import to_json
 from opwen_email_server.utils.temporary import create_tempfilename
 from opwen_email_server.utils.temporary import removing
@@ -60,11 +60,11 @@ class AzureTextStorage(_BaseAzureStorage):
     def store_text(self, resource_id: str, text: str):
         self.log_debug('storing %d characters at %s', len(text), resource_id)
         self._client.create_blob_from_bytes(self._container, resource_id,
-                                            gzip_string(text))
+                                            zstd_compress(text))
 
     def fetch_text(self, resource_id: str) -> str:
         blob = self._client.get_blob_to_bytes(self._container, resource_id)
-        text = gunzip_string(blob.content)
+        text = zstd_decompress(blob.content)
         self.log_debug('fetched %d characters from %s', len(text), resource_id)
         return text
 

@@ -5,3 +5,4 @@ pyzmail36==1.0.3
 sendgrid==3.6.5
 tornado==4.4.2
 typing==3.6.1
+zstandard==0.8.1
